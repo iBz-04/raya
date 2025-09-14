@@ -1,0 +1,10 @@
+```xml
+<output>
+    <evaluate>{evaluate}</evaluate>
+    <memory>{memory}</memory>
+    <plan>{plan}</plan>
+    <thought>{thought}</thought>
+    <action_name>{action_name}</action_name>
+    <action_input>{action_input}</action_input>
+</output>
+```
