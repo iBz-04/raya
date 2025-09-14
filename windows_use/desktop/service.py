@@ -116,11 +116,27 @@ class Desktop:
         process=Process(node.ProcessId)
         return process.name() in BROWSER_NAMES
     
-    def get_default_language(self)->str:
-        command="Get-Culture | Select-Object Name,DisplayName | ConvertTo-Csv -NoTypeInformation"
-        response,_=self.execute_command(command)
-        reader=csv.DictReader(io.StringIO(response))
-        return "".join([row.get('DisplayName') for row in reader])
+    def get_default_language(self) -> str:
+        """Return the OS default language display name.
+
+        Falls back to `"Unknown"` if the information cannot be parsed (e.g.
+        PowerShell not available or unexpected output). This prevents `TypeError`
+        when `None` values appear in the CSV rows.
+        """
+        command = (
+            "Get-Culture | Select-Object Name,DisplayName | ConvertTo-Csv -NoTypeInformation"
+        )
+        response, _ = self.execute_command(command)
+
+        display_names: list[str] = []
+        try:
+            reader = csv.DictReader(io.StringIO(response))
+            display_names = [row.get("DisplayName") for row in reader if row.get("DisplayName")]
+        except Exception:
+            # If parsing fails, we'll fall back to Unknown below
+            pass
+
+        return " ".join(display_names) if display_names else "Unknown"
     
     def resize_app(self,name:str,size:tuple[int,int]=None,loc:tuple[int,int]=None)->tuple[str,int]:
         apps=self.get_apps()
