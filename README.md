@@ -1,106 +1,70 @@
-<div align="center">
+# Raya
 
-  <h1>🪟 Windows-Use</h1>
-  <a href="https://pepy.tech/project/windows-use">
-    <img src="https://static.pepy.tech/badge/windows-use" alt="PyPI Downloads">
-  </a>
-  <a href="https://github.com/CursorTouch/windows-use/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
-  </a>
-  <img src="https://img.shields.io/badge/python-3.12%2B-blue" alt="Python">
-  <img src="https://img.shields.io/badge/platform-Windows%207–11-blue" alt="Platform: Windows 7 to 11">
-  <br>
+[![PyPI Downloads](https://static.pepy.tech/badge/Raya)](https://pepy.tech/project/Raya)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://github.com/CursorTouch/Raya/blob/main/LICENSE)
+[![Python Version](https://img.shields.io/badge/python-3.12%2B-blue)]()
+[![Platform: Windows 7–11](https://img.shields.io/badge/platform-Windows%207–11-blue)]()
 
-  <a href="https://x.com/CursorTouch">
-    <img src="https://img.shields.io/badge/follow-%40CursorTouch-1DA1F2?logo=twitter&style=flat" alt="Follow on Twitter">
-  </a>
-  <a href="https://discord.com/invite/Aue9Yj2VzS">
-    <img src="https://img.shields.io/badge/Join%20on-Discord-5865F2?logo=discord&logoColor=white&style=flat" alt="Join us on Discord">
-  </a>
+---
 
-</div>
+**Raya** is an automation agent for Windows. It lets you control your PC through code or AI, performing actions like opening applications, clicking buttons, typing, running commands, and capturing the UI state. Raya is designed to work at the Windows GUI layer, enabling advanced automation without relying on traditional computer vision models.
 
-<br>
 
-**Windows-Use** is a powerful automation agent that interact directly with the Windows at GUI layer. It bridges the gap between AI Agents and the Windows OS to perform tasks such as opening apps, clicking buttons, typing, executing shell commands, and capturing UI state all without relying on traditional computer vision models. Enabling any LLM to perform computer automation instead of relying on specific models for it.
 
-## 🛠️Installation Guide
 
-### **Prerequisites**
+## Installation
 
+**Requirements:**
 - Python 3.12 or higher
-- [UV](https://github.com/astral-sh/uv) (or `pip`)
-- Windows 7 or 8 or 10 or 11
+- Windows 7, 8, 10, or 11
+- [UV](https://github.com/astral-sh/uv) (optional, or use pip)
 
-### **Installation Steps**
-
-**Install using `uv`:**
-
+**To install with uv:**
 ```bash
-uv pip install windows-use
-````
-
-Or with pip:
-
-```bash
-pip install windows-use
+uv pip install Raya
 ```
 
-## ⚙️Basic Usage
+**Or with pip:**
+```bash
+pip install Raya
+```
 
+## Usage
+
+To use Raya in your own script:
 ```python
-# main.py
 from langchain_google_genai import ChatGoogleGenerativeAI
 from windows_use.agent import Agent
 from dotenv import load_dotenv
 
 load_dotenv()
-
-llm=ChatGoogleGenerativeAI(model='gemini-2.0-flash')
-agent = Agent(llm=llm,browser='chrome',use_vision=True)
-query=input("Enter your query: ")
-agent_result=agent.invoke(query=query)
-print(agent_result.content)
+llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash')
+agent = Agent(llm=llm, browser='chrome', use_vision=True)
+query = input("Enter your query: ")
+result = agent.invoke(query=query)
+print(result.content)
 ```
 
-## 🤖 Run Agent
-
-You can use the following to run from a script:
-
+To run the agent from the command line:
 ```bash
 python main.py
-Enter your query: <YOUR TASK>
 ```
 
----
+## Example Prompts
 
-## 🎥 Demos
+- Write a short note about LLMs and save to the desktop
+- Change from Dark mode to Light mode
 
-**PROMPT:** Write a short note about LLMs and save to the desktop
+See the [demos](#) for screenshots and more examples.
 
-<https://github.com/user-attachments/assets/0faa5179-73c1-4547-b9e6-2875496b12a0>
+## Project Status
 
-**PROMPT:** Change from Dark mode to Light mode
+- Raya is under active development.
+- Contributions, bug reports, and feature requests are welcome.
 
-<https://github.com/user-attachments/assets/47bdd166-1261-4155-8890-1b2189c0a3fd>
+## Caution
 
-## 📈 Grounding
-
-![Image](https://github.com/user-attachments/assets/e1d32725-e28a-4821-9c89-24b5ba2e583f)
-![Image](https://github.com/user-attachments/assets/be72ad43-c320-4831-95cf-6f1f30df18de)
-![Image](https://github.com/user-attachments/assets/d91b513e-13a0-4451-a6e9-f1e16def36e3)
-![Image](https://github.com/user-attachments/assets/b5ef5bcf-0e15-4c87-93fe-0f9a983536e5)
-![Image](https://github.com/user-attachments/assets/2b5cada6-4ca1-4e0c-8a10-2df29911b1cb)
-
-## Vision
-
-Talk to your computer. Watch it get things done.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=CursorTouch/Windows-Use&type=Date)](https://www.star-history.com/#CursorTouch/Windows-Use&Date)
-
-## ⚠️ Caution
+Raya interacts directly with your Windows OS at the GUI layer to perform actions. While designed to be intelligent and safe, it can make mistakes that might cause unintended changes. Use with care, ideally in a sandbox environment.
 
 Agent interacts directly with your Windows OS at GUI layer to perform actions. While the agent is designed to act intelligently and safely, it can make mistakes that might bring undesired system behaviour or cause unintended changes. Try to run the agent in a sandbox envirnoment.
 
@@ -110,7 +74,114 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please check the [CONTRIBUTING](CONTRIBUTING) file for setup and development workflow.
+Thank you for your interest in contributing to Raya!
+
+### Getting Started
+
+#### Development Environment
+
+Raya requires:
+- Python 3.13 or later
+
+#### Installation from Source
+
+1. Fork the repository on GitHub.
+2. Clone your fork locally:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/Raya.git
+   cd Raya
+   ```
+3. Install the package in development mode:
+   ```bash
+   pip install -e ".[dev,search]"
+   ```
+4. Set up pre-commit hooks:
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+
+### Development Workflow
+
+#### Branching Strategy
+- `main` branch contains the latest stable code
+- Create feature branches from `main` named according to the feature you're implementing: `feature/your-feature-name`
+- For bug fixes, use: `fix/bug-description`
+
+#### Commit Messages
+- No strict style enforced, but keep commit messages clear and informational.
+
+#### Code Style
+- Uses [Ruff](https://github.com/astral-sh/ruff) for formatting and linting (see `ruff.toml`).
+- Line length: 100 characters
+- Double quotes for strings
+- PEP 8 naming conventions
+- Add type hints to function signatures
+
+#### Pre-commit Hooks
+- Configured in `.pre-commit-config.yaml`.
+- Hooks will:
+  - Format code using Ruff
+  - Run linting checks
+  - Check for trailing whitespace
+  - Ensure files end with a newline
+  - Validate YAML files
+  - Check for large files
+  - Remove debug statements
+
+### Testing
+
+#### Running Tests
+Run the test suite with pytest:
+```bash
+pytest
+```
+To run specific test categories:
+```bash
+pytest tests/
+```
+
+#### Adding Tests
+- Add unit tests for new functionality in `tests/unit/`
+- For slow or network-dependent tests, mark them with `@pytest.mark.slow` or `@pytest.mark.integration`
+- Aim for high test coverage of new code
+
+### Pull Requests
+
+#### Creating a Pull Request
+1. Ensure your code passes all tests and pre-commit hooks
+2. Push your changes to your fork
+3. Submit a pull request to the main repository
+4. Follow the pull request template
+
+### Documentation
+- Update docstrings for new or modified functions, classes, and methods
+- Use Google-style docstrings:
+  ```python
+  def function_name(param1: type, param2: type) -> return_type:
+      """Short description.
+
+      Longer description if needed.
+
+      Args:
+          param1: Description of param1
+          param2: Description of param2
+
+      Returns:
+          Description of return value
+
+      Raises:
+          ExceptionType: When and why this exception is raised
+      """
+  ```
+- Update README.md for user-facing changes
+
+### Getting Help
+- Open an issue for discussion
+- Reach out to the maintainers
+- Check existing code for examples
+
+Thank you for contributing to Raya!
 
 Made with ❤️ by [Jeomon George](https://github.com/Jeomon)
 
@@ -121,9 +192,9 @@ Made with ❤️ by [Jeomon George](https://github.com/Jeomon)
 ```bibtex
 @software{
   author       = {George, Jeomon},
-  title        = {Windows-Use: Enable AI to control Windows OS},
+  title        = {Raya: Enable AI to control Windows OS},
   year         = {2025},
   publisher    = {GitHub},
-  url={https://github.com/CursorTouch/Windows-Use}
+  url={https://github.com/CursorTouch/Raya}
 }
 ```
