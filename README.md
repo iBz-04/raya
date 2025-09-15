@@ -1,9 +1,4 @@
-# Raya
-
-[![PyPI Downloads](https://static.pepy.tech/badge/Raya)](https://pepy.tech/project/Raya)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://github.com/CursorTouch/Raya/blob/main/LICENSE)
-[![Python Version](https://img.shields.io/badge/python-3.12%2B-blue)]()
-[![Platform: Windows 7–11](https://img.shields.io/badge/platform-Windows%207–11-blue)]()
+# Raya - Computer Use Agent
 
 ---
 
