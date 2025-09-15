@@ -1,35 +1,39 @@
-# Raya - Computer Use Agent
+# raya - Computer Use Agent
 
 ---
 
-**Raya** is an automation agent for Windows. It lets you control your PC through code or AI, performing actions like opening applications, clicking buttons, typing, running commands, and capturing the UI state. Raya is designed to work at the Windows GUI layer, enabling advanced automation without relying on traditional computer vision models.
+## Introduction
 
+Are you tired of performing repetitive tasks on your raya PC? 
 
+**raya** is an AI agent for raya that harnesses the power of code and AI to control your PC with ease. It enables you to automate any task by interacting with applications, clicking buttons, typing, running commands, and capturing the UI state.
+
+Unlike traditional computer vision models, **raya** works directly at the raya GUI layer, providing advanced automation capabilities without relying on image recognition techniques. 
 
 
 ## Installation
 
 **Requirements:**
 - Python 3.12 or higher
-- Windows 7, 8, 10, or 11
+- raya 7, 8, 10, or 11
 - [UV](https://github.com/astral-sh/uv) (optional, or use pip)
 
 **To install with uv:**
 ```bash
-uv pip install Raya
+uv pip install raya
 ```
 
 **Or with pip:**
 ```bash
-pip install Raya
+pip install raya
 ```
 
 ## Usage
 
-To use Raya in your own script:
+To use raya in your own script:
 ```python
 from langchain_google_genai import ChatGoogleGenerativeAI
-from windows_use.agent import Agent
+from raya.agent import Agent
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -54,14 +58,12 @@ See the [demos](#) for screenshots and more examples.
 
 ## Project Status
 
-- Raya is under active development.
+- raya is under active development.
 - Contributions, bug reports, and feature requests are welcome.
 
 ## Caution
 
-Raya interacts directly with your Windows OS at the GUI layer to perform actions. While designed to be intelligent and safe, it can make mistakes that might cause unintended changes. Use with care, ideally in a sandbox environment.
-
-Agent interacts directly with your Windows OS at GUI layer to perform actions. While the agent is designed to act intelligently and safely, it can make mistakes that might bring undesired system behaviour or cause unintended changes. Try to run the agent in a sandbox envirnoment.
+raya interacts directly with your raya OS at the GUI layer to perform actions. While designed to be intelligent and safe, it can make mistakes that might cause unintended changes. Use with care.
 
 ## 🪪 License
 
@@ -69,13 +71,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤝 Contributing
 
-Thank you for your interest in contributing to Raya!
+Thank you for your interest in contributing to raya!
 
 ### Getting Started
 
 #### Development Environment
 
-Raya requires:
+raya requires:
 - Python 3.13 or later
 
 #### Installation from Source
@@ -83,8 +85,8 @@ Raya requires:
 1. Fork the repository on GitHub.
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/Raya.git
-   cd Raya
+   git clone https://github.com/YOUR_USERNAME/raya.git
+   cd raya
    ```
 3. Install the package in development mode:
    ```bash
@@ -176,7 +178,7 @@ pytest tests/
 - Reach out to the maintainers
 - Check existing code for examples
 
-Thank you for contributing to Raya!
+Thank you for contributing to raya!
 
 Made with ❤️ by [Jeomon George](https://github.com/Jeomon)
 
@@ -187,9 +189,8 @@ Made with ❤️ by [Jeomon George](https://github.com/Jeomon)
 ```bibtex
 @software{
   author       = {George, Jeomon},
-  title        = {Raya: Enable AI to control Windows OS},
+  title        = {raya: Enable AI to control raya OS},
   year         = {2025},
   publisher    = {GitHub},
-  url={https://github.com/CursorTouch/Raya}
+  url={https://github.com/CursorTouch/raya}
 }
-```
