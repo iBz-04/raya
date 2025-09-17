@@ -171,16 +171,13 @@ pytest tests/
           ExceptionType: When and why this exception is raised
       """
   ```
-- Update README.md for user-facing changes
+
 
 ### Getting Help
 - Open an issue for discussion
 - Reach out to the maintainers
 - Check existing code for examples
 
-Thank you for contributing to raya!
-
-Made with ❤️ by [Jeomon George](https://github.com/Jeomon)
 
 ---
 
@@ -188,9 +185,9 @@ Made with ❤️ by [Jeomon George](https://github.com/Jeomon)
 
 ```bibtex
 @software{
-  author       = {George, Jeomon},
-  title        = {raya: Enable AI to control raya OS},
+  author       = {Rayamah, Ibrahim},
+  title        = {raya: Enable AI to control your PC},
   year         = {2025},
   publisher    = {GitHub},
-  url={https://github.com/CursorTouch/raya}
+  url={https://github.com/iBz-04/raya}
 }

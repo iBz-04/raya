@@ -159,19 +159,56 @@ class Desktop:
         return (f'Application {name.title()} resized to {width}x{height} at {x},{y}.',0)
         
     def launch_app(self,name:str):
+        if not name or not isinstance(name, str):
+            return (f'Invalid application name provided.', None, 1)
+        
         apps_map=self.get_apps_from_start_menu()
-        matched_app=process.extractOne(name,apps_map.keys())
+        if not apps_map:
+            return (f'Could not retrieve start menu applications.', None, 1)
+            
+        matched_app=process.extractOne(name, apps_map.keys(), score_cutoff=60)
         if matched_app is None:
-            return (f'Application {name.title()} not found in start menu.',1)
-        app_name,_=matched_app
-        appid=apps_map.get(app_name)
+            # Try common application alternatives
+            common_apps = {
+                'word': ['microsoft word', 'winword', 'word'],
+                'excel': ['microsoft excel', 'excel'],
+                'powerpoint': ['microsoft powerpoint', 'powerpoint'],
+                'chrome': ['google chrome', 'chrome'],
+                'firefox': ['mozilla firefox', 'firefox'],
+                'edge': ['microsoft edge', 'edge'],
+                'notepad': ['notepad'],
+                'calculator': ['calculator', 'calc'],
+                'paint': ['paint'],
+                'cmd': ['command prompt', 'cmd'],
+                'powershell': ['windows powershell', 'powershell']
+            }
+            
+            name_lower = name.lower()
+            for key, alternatives in common_apps.items():
+                if name_lower in alternatives or key in name_lower:
+                    for alt in alternatives:
+                        matched_app = process.extractOne(alt, apps_map.keys(), score_cutoff=60)
+                        if matched_app:
+                            break
+                    if matched_app:
+                        break
+            
+            if matched_app is None:
+                return (f'Application "{name}" not found in start menu. Available apps: {", ".join(list(apps_map.keys())[:10])}...', None, 1)
+        
+        app_name, _ = matched_app
+        appid = apps_map.get(app_name)
         if appid is None:
-            return (name,f'Application {name.title()} not found in start menu.',1)
-        if name.endswith('.exe'):
-            response,status=self.execute_command(f'Start-Process "{appid}"')
-        else:
-            response,status=self.execute_command(f'Start-Process "shell:AppsFolder\\{appid}"')
-        return app_name,response,status
+            return (f'Application ID not found for "{app_name}".', None, 1)
+        
+        try:
+            if name.endswith('.exe'):
+                response, status = self.execute_command(f'Start-Process "{appid}"')
+            else:
+                response, status = self.execute_command(f'Start-Process "shell:AppsFolder\\{appid}"')
+            return app_name, response, status
+        except Exception as e:
+            return (f'Error launching {app_name}: {str(e)}', None, 1)
     
     def switch_app(self,name:str):
         apps={app.name:app for app in self.desktop_state.apps}
@@ -227,7 +264,7 @@ class Desktop:
         apps=apps[1:] if len(apps)>1 else []
         return (active_app,apps)
     
-    def get_dpi_scaling():
+    def get_dpi_scaling(self):
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
         dpi = user32.GetDpiForSystem()
