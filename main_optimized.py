@@ -43,21 +43,16 @@ def main():
         )
         print("Using GPT-4o-mini (budget option)")
     
-    # Optimized agent settings
     agent = Agent(
         llm=llm,
         browser='chrome',
-        use_vision=False,  # Disable vision for faster processing
+        use_vision=False,  
         auto_minimize=True,
-        max_steps=8,  # Reduce max steps to prevent long loops
-        consecutive_failures=2  # Reduce failure tolerance for faster termination
+        max_steps=8, 
+        consecutive_failures=2  
     )
     
-    print("\nAgent optimizations applied:")
-    print("- Reduced max steps to 8 (vs default 20)")
-    print("- Vision disabled for faster processing")
-    print("- Consecutive failures limit set to 2")
-    print("- Model timeout and retry limits configured")
+  
     
     query = input("\nEnter your query: ")
     agent.print_response(query)
