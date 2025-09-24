@@ -1,6 +1,6 @@
 [project]
 name = "raya_agent"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Computer-use Agent for the Windows Operating System."
 authors = [
     { name = "Ibrahim Rayamah", email = "issakaibrahimrayamah@gmail.com" }
