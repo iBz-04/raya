@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Are you tired of performing repetitive tasks on your raya PC? 
+Are you tired of performing repetitive tasks on your PC? 
 
 **raya** is an AI agent for raya that harnesses the power of code and AI to control your PC with ease. It enables you to automate any task by interacting with applications, clicking buttons, typing, running commands, and capturing the UI state.
 

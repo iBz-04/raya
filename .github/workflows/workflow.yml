@@ -1,0 +1,36 @@
+
+
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Hatch
+        run: |
+          pip install hatch
+
+      - name: Build Distribution
+        run: |
+          hatch build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.7.2
+        with:
+          user: __token__
+         
