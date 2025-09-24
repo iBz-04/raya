@@ -1,5 +1,5 @@
 [project]
-name = "raya"
+name = "raya_agent"
 version = "0.1.0"
 description = "A Computer-use Agent for the Windows Operating System."
 authors = [
