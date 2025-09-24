@@ -2,7 +2,7 @@
 
 import pytest
 from typing import Set
-from windows_use.tree.config import (
+from raya.tree.config import (
     INTERACTIVE_CONTROL_TYPE_NAMES,
     DEFAULT_ACTIONS,
     INFORMATIVE_CONTROL_TYPE_NAMES,
@@ -10,7 +10,7 @@ from windows_use.tree.config import (
 
 class TestTreeConfig:
     """
-    Tests for the configuration variables in windows_use.tree.config.
+    Tests for the configuration variables in raya.tree.config.
     """
 
     def test_interactive_control_type_names_type(self):

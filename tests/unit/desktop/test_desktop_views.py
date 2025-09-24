@@ -1,14 +1,12 @@
 import pytest
-from typing import Literal, Optional
-from dataclasses import dataclass, field
 from unittest.mock import MagicMock
 
-from windows_use.desktop.views import App, Size, DesktopState
-from windows_use.tree.views import TreeState, TreeElementNode, TextElementNode, ScrollElementNode, BoundingBox, Center
+from raya.desktop.views import App, Size, DesktopState
+from raya.tree.views import TreeState
 
 class TestDesktopViews:
     """
-    Tests for the data models and view-related classes in windows_use.desktop.views.
+    Tests for the data models and view-related classes in raya.desktop.views.
     """
 
     def test_app_initialization(self):

@@ -57,4 +57,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-packages = ["windows_use"]
+packages = ["raya"]

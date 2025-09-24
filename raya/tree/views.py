@@ -1,45 +1,56 @@
-from dataclasses import dataclass,field
-from tabulate import tabulate
+from dataclasses import dataclass, field
 
 @dataclass
 class TreeState:
-    interactive_nodes:list['TreeElementNode']=field(default_factory=list)
-    informative_nodes:list['TextElementNode']=field(default_factory=list)
-    scrollable_nodes:list['ScrollElementNode']=field(default_factory=list)
+    interactive_nodes: list['TreeElementNode'] = field(default_factory=list)
+    informative_nodes: list['TextElementNode'] = field(default_factory=list)
+    scrollable_nodes: list['ScrollElementNode'] = field(default_factory=list)
 
     def interactive_elements_to_string(self) -> str:
         if not self.interactive_nodes:
-            return "No interactive elements"
-        headers = ["Label", "App Name", "ControlType", "Name", "Shortcut", "Coordinates"]
-        rows = [node.to_row(idx) for idx, node in enumerate(self.interactive_nodes)]
-        return tabulate(rows, headers=headers, tablefmt="github")
+            return ""
+        lines = []
+        for idx, node in enumerate(self.interactive_nodes):
+            lines.append(
+                f"Label: {idx} App Name: {node.app_name} ControlType: {node.control_type} "
+                f"Control Name: {node.name} Shortcut: {node.shortcut} Cordinates: {node.center.to_string()}"
+            )
+        return "\n".join(lines)
 
     def informative_elements_to_string(self) -> str:
         if not self.informative_nodes:
-            return "No informative elements"
-        headers = ["App Name", "Name"]
-        rows = [node.to_row() for node in self.informative_nodes]
-        return tabulate(rows, headers=headers, tablefmt="github")
+            return ""
+        lines = []
+        for node in self.informative_nodes:
+            lines.append(f"App Name: {node.app_name} Name: {node.name}")
+        return "\n".join(lines)
 
     def scrollable_elements_to_string(self) -> str:
         if not self.scrollable_nodes:
-            return "No scrollable elements"
-        headers = [
-            "Label", "App Name", "ControlType", "Name", "Coordinates",
-            "Horizontal Scrollable", "Vertical Scrollable"
-        ]
+            return ""
+        lines = []
         base_index = len(self.interactive_nodes)
-        rows = [node.to_row(idx, base_index) for idx, node in enumerate(self.scrollable_nodes)]
-        return tabulate(rows, headers=headers, tablefmt="github")
+        for idx, node in enumerate(self.scrollable_nodes):
+            lines.append(
+                f"Label: {base_index+idx} App Name: {node.app_name} ControlType: {node.control_type} "
+                f"Control Name: {node.name} Cordinates: {node.center.to_string()} "
+                f"Horizontal Scrollable: {node.horizontal_scrollable} Vertical Scrollable: {node.vertical_scrollable}"
+            )
+        return "\n".join(lines)
     
 @dataclass
 class BoundingBox:
-    left:int
-    top:int
-    right:int
-    bottom:int
-    width:int
-    height:int
+    left: int
+    top: int
+    right: int
+    bottom: int
+    width: int = field(init=False)
+    height: int = field(init=False)
+
+    def __post_init__(self):
+        # Compute width and height based on coordinates
+        self.width = self.right - self.left
+        self.height = self.bottom - self.top
 
     def xywh_to_string(self):
         return f'({self.left},{self.top},{self.width},{self.height})'

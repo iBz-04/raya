@@ -6,13 +6,13 @@ from langchain_core.tools import BaseTool
 from termcolor import colored
 from textwrap import shorten
 
-from windows_use.agent.service import Agent, logger
-from windows_use.agent.views import AgentState, AgentStep, AgentResult
-from windows_use.agent.registry.views import ToolResult
-from windows_use.desktop.service import Desktop
-from windows_use.agent.registry.service import Registry
-from windows_use.agent.prompt.service import Prompt
-from windows_use.agent.utils import extract_agent_data, image_message
+from raya.agent.service import Agent, logger
+from raya.agent.views import AgentState, AgentStep, AgentResult
+from raya.agent.registry.views import ToolResult
+from raya.desktop.service import Desktop
+from raya.agent.registry.service import Registry
+from raya.agent.prompt.service import Prompt
+from raya.agent.utils import extract_agent_data, image_message
 
 # Suppress logging during tests for cleaner output
 logger.setLevel(100)
@@ -78,10 +78,10 @@ def agent_instance(
 ):
     """Provides an Agent instance with mocked dependencies."""
     # Use patch to replace classes with mocks during Agent initialization
-    with patch("windows_use.agent.service.Desktop", return_value=mock_desktop), \
-         patch("windows_use.agent.service.Registry", return_value=mock_registry), \
-         patch("windows_use.agent.service.AgentState", return_value=mock_agent_state), \
-         patch("windows_use.agent.service.AgentStep", return_value=mock_agent_step):
+    with patch("raya.agent.service.Desktop", return_value=mock_desktop), \
+         patch("raya.agent.service.Registry", return_value=mock_registry), \
+         patch("raya.agent.service.AgentState", return_value=mock_agent_state), \
+         patch("raya.agent.service.AgentStep", return_value=mock_agent_step):
         agent = Agent(llm=mock_llm)
         # Manually re-assign the mock instances to the agent for direct control in tests
         agent.desktop = mock_desktop
@@ -92,11 +92,11 @@ def agent_instance(
         return agent
 
 class TestAgent:
-    """Tests for the Agent class in windows_use.agent.service."""
+    """Tests for the Agent class in raya.agent.service."""
 
     def test_init_default_values(self):
         """Test that the Agent initializes with default values correctly."""
-        with patch('windows_use.agent.service.Registry') as mock_reg:
+        with patch('raya.agent.service.Registry') as mock_reg:
             agent = Agent(llm=MagicMock(spec=BaseChatModel))
             assert agent.name == "Windows Use"
             assert agent.description == "An agent that can interact with GUI elements on Windows"
@@ -119,7 +119,7 @@ class TestAgent:
         mock_tool.args = {}
 
         # We must patch the Registry here because its __init__ accesses tool attributes
-        with patch('windows_use.agent.service.Registry') as mock_reg_class:
+        with patch('raya.agent.service.Registry') as mock_reg_class:
             mock_registry_instance = MagicMock()
             mock_registry_instance.tools = [mock_tool] # Simulate the tools list
             mock_reg_class.return_value = mock_registry_instance
@@ -140,8 +140,8 @@ class TestAgent:
             assert agent.use_vision is True
             assert mock_tool in agent.registry.tools
 
-    @patch("windows_use.agent.service.extract_agent_data")
-    @patch("windows_use.agent.service.logger")
+    @patch("raya.agent.service.extract_agent_data")
+    @patch("raya.agent.service.logger")
     def test_reason(self, mock_logger, mock_extract_agent_data, agent_instance):
         """Test the reason method's logic."""
         mock_message = AIMessage(content="mock message")
@@ -157,8 +157,8 @@ class TestAgent:
             agent_data=mock_agent_data, messages=[mock_message]
         )
 
-    @patch("windows_use.agent.service.Prompt")
-    @patch("windows_use.agent.service.image_message")
+    @patch("raya.agent.service.Prompt")
+    @patch("raya.agent.service.image_message")
     @pytest.mark.parametrize("use_vision_flag", [True, False])
     def test_action_success(self, mock_image_message, mock_prompt, use_vision_flag, agent_instance):
         """Test the action method for success cases."""
@@ -181,8 +181,8 @@ class TestAgent:
             agent_data=None, observation="Tool success", messages=[AIMessage(content="action_prompt"), final_message]
         )
 
-    @patch("windows_use.agent.service.Prompt")
-    @patch("windows_use.agent.service.image_message")
+    @patch("raya.agent.service.Prompt")
+    @patch("raya.agent.service.image_message")
     def test_action_failure(self, mock_image_message, mock_prompt, agent_instance):
         """Test the action method for failure cases."""
         agent_instance.use_vision = False
@@ -198,7 +198,7 @@ class TestAgent:
         )
         mock_image_message.assert_not_called()
 
-    @patch("windows_use.agent.service.Prompt")
+    @patch("raya.agent.service.Prompt")
     def test_answer(self, mock_prompt, agent_instance):
         """Test the answer method's logic."""
         agent_instance.agent_state.messages = [HumanMessage(content="prior"), AIMessage(content="pop")]
@@ -214,7 +214,7 @@ class TestAgent:
             agent_data=None, observation=None, result="Final Content", messages=[AIMessage(content="answer_prompt")]
         )
 
-    @patch("windows_use.agent.service.Prompt")
+    @patch("raya.agent.service.Prompt")
     def test_invoke_max_steps_reached(self, mock_prompt, agent_instance):
         """Test invoke method when maximum steps are reached."""
         agent_instance.agent_step.is_last_step.return_value = True
@@ -224,7 +224,7 @@ class TestAgent:
         assert result.is_done is False
         assert result.error == "Maximum steps reached."
 
-    @patch("windows_use.agent.service.Prompt")
+    @patch("raya.agent.service.Prompt")
     def test_invoke_consecutive_failures_exceeded(self, mock_prompt, agent_instance):
         """Test invoke method when consecutive failures are exceeded."""
         # Setup to fail
@@ -237,7 +237,7 @@ class TestAgent:
         assert result.is_done is False
         assert result.error == "Mock Error"
 
-    @patch("windows_use.agent.service.Prompt")
+    @patch("raya.agent.service.Prompt")
     def test_invoke_reason_exception_handling(self, mock_prompt, agent_instance):
         """Test exception handling for the reason method."""
         agent_instance.consecutive_failures = 2 # Allow for 1 failure
@@ -255,7 +255,7 @@ class TestAgent:
         assert agent_instance.agent_state.error == "Reason Error 1"
         agent_instance.action.assert_called_once() # Should be called after success
 
-    @patch("windows_use.agent.service.Prompt")
+    @patch("raya.agent.service.Prompt")
     def test_invoke_task_done(self, mock_prompt, agent_instance):
         """Test invoke method when the task is completed."""
         agent_instance.reason = MagicMock() # Mock reason to prevent its logic
@@ -270,7 +270,7 @@ class TestAgent:
         assert result.is_done is True
         assert result.content == "Final Result"
 
-    @patch("windows_use.agent.service.Prompt")
+    @patch("raya.agent.service.Prompt")
     def test_invoke_action_path(self, mock_prompt, agent_instance):
         """Test invoke method's normal action path."""
         agent_instance.reason = MagicMock() # Mock reason to prevent its logic
@@ -285,7 +285,7 @@ class TestAgent:
         agent_instance.agent_step.increment_step.assert_called_once()
         assert result.is_done is False
 
-    @patch("windows_use.agent.service.Prompt")
+    @patch("raya.agent.service.Prompt")
     def test_invoke_general_exception_handling(self, mock_prompt, agent_instance):
         """Test invoke method's general exception handling."""
         agent_instance.registry.get_tools_prompt.side_effect = Exception("General Invoke Error")
@@ -295,8 +295,8 @@ class TestAgent:
         assert result.is_done is False
         assert result.error == "General Invoke Error"
 
-    @patch("windows_use.agent.service.Console")
-    def test_print_response(self, mock_console, agent_instance):
+    @patch("raya.agent.service.Console")
+    def test_print_response(self, mock_console, agent_instance, mock_desktop, mock_registry, mock_agent_state, mock_agent_step):
         """Test print_response method."""
         agent_instance.invoke = MagicMock(return_value=AgentResult(content="Mock Content", is_done=True))
         mock_console_instance = mock_console.return_value
@@ -306,8 +306,8 @@ class TestAgent:
         agent_instance.invoke.assert_called_once_with("test query")
         mock_console_instance.print.assert_called_once()
 
-    @patch("windows_use.agent.service.Console")
-    def test_print_response_with_error(self, mock_console, agent_instance):
+    @patch("raya.agent.service.Console")
+    def test_print_response_with_error(self, mock_console, agent_instance, mock_desktop, mock_registry, mock_agent_state, mock_agent_step):
         """Test print_response method when invoke returns an error."""
         agent_instance.invoke = MagicMock(return_value=AgentResult(error="Mock Error"))
         mock_console_instance = mock_console.return_value

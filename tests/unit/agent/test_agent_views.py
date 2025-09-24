@@ -3,12 +3,12 @@
 import pytest
 from unittest.mock import MagicMock
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
-from windows_use.agent.views import AgentState, AgentStep, AgentResult, Action, AgentData
-from windows_use.tree.views import TreeState, TreeElementNode, TextElementNode, ScrollElementNode, BoundingBox, Center
+from raya.agent.views import AgentState, AgentStep, AgentResult, Action, AgentData
+from raya.tree.views import TreeState, TreeElementNode, TextElementNode, ScrollElementNode, BoundingBox, Center
 
 class TestAgentViews:
     """
-    Tests for the data models and view-related classes in windows_use.agent.views.
+    Tests for the data models and view-related classes in raya.agent.views.
     """
 
     def test_agent_state_initialization(self):

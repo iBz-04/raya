@@ -1,5 +1,5 @@
-from windows_use.agent.registry.views import Tool as ToolData, ToolResult
-from windows_use.desktop.service import Desktop
+from raya.agent.registry.views import Tool as ToolData, ToolResult
+from raya.desktop.service import Desktop
 from langchain.tools import Tool
 from textwrap import dedent
 

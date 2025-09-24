@@ -4,13 +4,13 @@ from datetime import datetime
 from pathlib import Path
 
 # --- The module we are testing ---
-from windows_use.agent.prompt.service import Prompt
+from raya.agent.prompt.service import Prompt
 
 # --- Import the actual classes to be mocked for autospeccing ---
 # This helps create higher-fidelity mocks.
-from windows_use.agent.views import AgentData, AgentStep, Action
-from windows_use.agent.registry.views import ToolResult
-from windows_use.desktop.views import DesktopState, TreeState
+from raya.agent.views import AgentData, AgentStep, Action
+from raya.agent.registry.views import ToolResult
+from raya.desktop.views import DesktopState, TreeState
 
 
 # #############################################################################
@@ -27,16 +27,16 @@ def mock_prompt_template(mocker):
     
     # Mock the class methods of PromptTemplate
     mocker.patch(
-        "windows_use.agent.prompt.service.PromptTemplate.from_file",
+        "raya.agent.prompt.service.PromptTemplate.from_file",
         return_value=mock_template_instance
     )
     mocker.patch(
-        "windows_use.agent.prompt.service.PromptTemplate.from_template",
+        "raya.agent.prompt.service.PromptTemplate.from_template",
         return_value=mock_template_instance
     )
     
     # Mock the file loader utility
-    mocker.patch("windows_use.agent.prompt.service.files")
+    mocker.patch("raya.agent.prompt.service.files")
     
     # Return the instance so we can inspect calls to .format()
     return mock_template_instance
@@ -45,24 +45,24 @@ def mock_prompt_template(mocker):
 
 def mock_system_info(mocker):
     """Mocks all external system-information gathering functions."""
-    mocker.patch("windows_use.agent.prompt.service.pg.size", return_value=(1920, 1080))
-    mocker.patch("windows_use.agent.prompt.service.pg.position", return_value=mocker.MagicMock(x=100, y=200))
+    mocker.patch("raya.agent.prompt.service.pg.size", return_value=(1920, 1080))
+    mocker.patch("raya.agent.prompt.service.pg.position", return_value=mocker.MagicMock(x=100, y=200))
 
     # --- THIS IS THE FIX FOR THE DATETIME ERROR ---
     # 1. Patch the entire datetime class where it's imported in your service module.
-    mock_datetime_class = mocker.patch("windows_use.agent.prompt.service.datetime")
+    mock_datetime_class = mocker.patch("raya.agent.prompt.service.datetime")
     
     # 2. Configure the mock. Tell it that when its .now() method is called,
     #    it should return a *real* datetime object so that .strftime() works.
     mock_datetime_class.now.return_value = datetime(2025, 7, 5)
 
-    mocker.patch("windows_use.agent.prompt.service.getuser", return_value="test_user")
-    mocker.patch("windows_use.agent.prompt.service.platform.system", return_value="Windows")
+    mocker.patch("raya.agent.prompt.service.getuser", return_value="test_user")
+    mocker.patch("raya.agent.prompt.service.platform.system", return_value="Windows")
     
     mock_home = mocker.MagicMock(spec=Path)
     mock_home.joinpath.return_value.as_posix.return_value = "C:/Users/test_user/Downloads"
     mock_home.as_posix.return_value = "C:/Users/test_user"
-    mocker.patch("windows_use.agent.prompt.service.Path.home", return_value=mock_home)
+    mocker.patch("raya.agent.prompt.service.Path.home", return_value=mock_home)
 
 @pytest.fixture
 def mock_agent_data(mocker):
@@ -114,7 +114,8 @@ def mock_desktop_state(mocker):
 class TestPrompt:
     """Tests the static methods of the Prompt service class."""
 
-    def test_system_prompt(self, mock_prompt_template, mock_system_info):
+    @pytest.mark.usefixtures("mock_prompt_template", "mock_system_info")
+    def test_system_prompt(self, mock_prompt_template):
         """
         Tests `system_prompt` correctly formats all system info.
         """
@@ -140,14 +141,15 @@ class TestPrompt:
         mock_prompt_template.format.assert_called_once_with(**expected_format_args)
         assert result == "formatted prompt"
 
-    def test_action_prompt(self, mock_prompt_template, mock_agent_data):
+    @pytest.mark.usefixtures("mock_prompt_template", "mock_agent_data")
+    def test_action_prompt(self, prompt_template, agent_data):
         """
         Tests `action_prompt` correctly formats agent data.
         """
         # Arrange (handled by fixtures)
 
         # Act
-        result = Prompt.action_prompt(mock_agent_data)
+        result = Prompt.action_prompt(agent_data)
 
         # Assert
         expected_format_args = {
@@ -157,16 +159,17 @@ class TestPrompt:
             'action_name': "click",
             'action_input': {"element_id": 1}
         }
-        mock_prompt_template.format.assert_called_once_with(**expected_format_args)
+        prompt_template.format.assert_called_once_with(**expected_format_args)
         assert result == "formatted prompt"
 
-    def test_previous_observation_prompt(self, mock_prompt_template, mocker):
+    @pytest.mark.usefixtures("mock_prompt_template")
+    def test_previous_observation_prompt(self, prompt_template, mocker):
         """
         Tests `previous_observation_prompt` correctly formats the observation string.
         """
         # Arrange
         # We need to mock dedent for this specific test
-        mock_dedent = mocker.patch("windows_use.agent.prompt.service.dedent")
+        mock_dedent = mocker.patch("raya.agent.prompt.service.dedent")
         observation_text = "The tool executed successfully."
 
         # Act
@@ -175,7 +178,7 @@ class TestPrompt:
         # Assert
         mock_dedent.assert_called_once()
         # The template is created from the result of dedent, so we assert it was called with ANY string
-        mock_prompt_template.format.assert_called_once_with(observation=observation_text)
+        prompt_template.format.assert_called_once_with(observation=observation_text)
         assert result == "formatted prompt"
 
     @pytest.mark.parametrize(

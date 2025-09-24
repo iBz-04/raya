@@ -12,17 +12,17 @@ import io
 from fuzzywuzzy import process
 from time import sleep
 
-from windows_use.desktop.service import Desktop
-from windows_use.desktop.views import DesktopState, App, Size
-from windows_use.desktop.config import EXCLUDED_APPS, AVOIDED_APPS
-# No need to import Tree here, as we will patch its source
-from windows_use.tree.views import TreeState
+from raya.desktop.service import Desktop
+from raya.desktop.views import DesktopState, App, Size
+from raya.desktop.config import EXCLUDED_APPS, AVOIDED_APPS
+
+from raya.tree.views import TreeState
 import uiautomation as uia
 import pyautogui
 
 class TestDesktop:
     """
-    Tests for the Desktop class in windows_use.desktop.__init__.py.
+    Tests for the Desktop class in raya.desktop.__init__.py.
     """
 
     @pytest.fixture(autouse=True)
@@ -30,18 +30,18 @@ class TestDesktop:
         """
         Mocks global dependencies for Desktop tests.
         """
-        # --- FIX: Patch 'Tree' at its source module 'windows_use.tree' ---
-        with patch("windows_use.desktop.pyautogui") as mock_pyautogui, \
-             patch("windows_use.desktop.GetScreenSize") as mock_get_screen_size, \
-             patch("windows_use.desktop.GetRootControl") as mock_get_root_control, \
-             patch("windows_use.desktop.ControlFromCursor") as mock_control_from_cursor, \
-             patch("windows_use.desktop.SetWindowTopmost") as mock_set_window_topmost, \
-             patch("windows_use.desktop.subprocess.run") as mock_subprocess_run, \
-             patch("windows_use.desktop.csv") as mock_csv, \
-             patch("windows_use.desktop.io") as mock_io, \
-             patch("windows_use.desktop.process") as mock_process, \
-             patch("windows_use.desktop.sleep") as mock_sleep, \
-             patch("windows_use.tree.Tree") as MockTree:
+        # --- FIX: Patch 'Tree' at its source module 'raya.tree' ---
+        with patch("raya.desktop.pyautogui") as mock_pyautogui, \
+             patch("raya.desktop.GetScreenSize") as mock_get_screen_size, \
+             patch("raya.desktop.GetRootControl") as mock_get_root_control, \
+             patch("raya.desktop.ControlFromCursor") as mock_control_from_cursor, \
+             patch("raya.desktop.SetWindowTopmost") as mock_set_window_topmost, \
+             patch("raya.desktop.subprocess.run") as mock_subprocess_run, \
+             patch("raya.desktop.csv") as mock_csv, \
+             patch("raya.desktop.io") as mock_io, \
+             patch("raya.desktop.process") as mock_process, \
+             patch("raya.desktop.sleep") as mock_sleep, \
+             patch("raya.tree.Tree") as MockTree:
 
             self.mock_pyautogui = mock_pyautogui
             self.mock_get_screen_size = mock_get_screen_size

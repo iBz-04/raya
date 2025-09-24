@@ -1,11 +1,11 @@
 import pytest
 from typing import Set
 
-from windows_use.desktop.config import AVOIDED_APPS, EXCLUDED_APPS
+from raya.desktop.config import AVOIDED_APPS, EXCLUDED_APPS
 
 class TestDesktopConfig:
     """
-    Tests for the configuration variables in windows_use.desktop.config.
+    Tests for the configuration variables in raya.desktop.config.
     """
 
     def test_avoided_apps_type(self):

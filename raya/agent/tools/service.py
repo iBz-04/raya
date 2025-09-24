@@ -1,5 +1,5 @@
-from windows_use.agent.tools.views import Click, Type, Launch, Scroll, Drag, Move, Shortcut, Key, Wait, Scrape,Done, Clipboard, Shell, Switch, Resize
-from windows_use.desktop.service import Desktop
+from raya.agent.tools.views import Click, Type, Launch, Scroll, Drag, Move, Shortcut, Key, Wait, Scrape,Done, Clipboard, Shell, Switch, Resize
+from raya.desktop.service import Desktop
 from humancursor import SystemCursor
 from markdownify import markdownify
 from langchain.tools import tool

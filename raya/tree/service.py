@@ -1,8 +1,8 @@
-from windows_use.tree.views import TreeElementNode, TextElementNode, ScrollElementNode, Center, BoundingBox, TreeState
-from windows_use.tree.config import INTERACTIVE_CONTROL_TYPE_NAMES,INFORMATIVE_CONTROL_TYPE_NAMES, DEFAULT_ACTIONS
-from uiautomation import GetRootControl,Control,ImageControl,ScrollPattern
-from windows_use.tree.utils import random_point_within_bounding_box
-from windows_use.desktop.config import AVOIDED_APPS, EXCLUDED_APPS
+from raya.tree.views import TreeElementNode, TextElementNode, ScrollElementNode, Center, BoundingBox, TreeState
+from raya.tree.config import INTERACTIVE_CONTROL_TYPE_NAMES,INFORMATIVE_CONTROL_TYPE_NAMES, DEFAULT_ACTIONS
+from uiautomation import Control, GetRootControl, ImageControl, ScrollPattern
+from raya.tree.utils import random_point_within_bounding_box
+from raya.desktop.config import AVOIDED_APPS, EXCLUDED_APPS
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from PIL import Image, ImageFont, ImageDraw
 from typing import TYPE_CHECKING
@@ -10,7 +10,7 @@ from time import sleep
 import random
 
 if TYPE_CHECKING:
-    from windows_use.desktop.service import Desktop
+    from raya.desktop.service import Desktop
 
 class Tree:
     def __init__(self,desktop:'Desktop'):
@@ -164,7 +164,7 @@ class Tree:
                         name=child.Name.strip() or "''",
                         control_type=control_type,
                         shortcut=node.AcceleratorKey or "''",
-                        bounding_box=BoundingBox(left=box.left,top=box.top,right=box.right,bottom=box.bottom,width=box.width(),height=box.height()),
+                        bounding_box=BoundingBox(left=box.left, top=box.top, right=box.right, bottom=box.bottom),
                         center=center,
                         app_name=app_name
                     ))
@@ -179,7 +179,7 @@ class Tree:
                     name=node.Name.strip() or "''",
                     control_type=control_type,
                     shortcut=node.AcceleratorKey or "''",
-                    bounding_box=BoundingBox(left=box.left,top=box.top,right=box.right,bottom=box.bottom,width=box.width(),height=box.height()),
+                    bounding_box=BoundingBox(left=box.left, top=box.top, right=box.right, bottom=box.bottom),
                     center=center,
                     app_name=app_name
                 ))
@@ -197,7 +197,7 @@ class Tree:
                     name=node.Name.strip() or "''",
                     control_type=node.LocalizedControlType.title(),
                     shortcut=node.AcceleratorKey or "''",
-                    bounding_box=BoundingBox(left=box.left,top=box.top,right=box.right,bottom=box.bottom,width=box.width(),height=box.height()),
+                    bounding_box=BoundingBox(left=box.left, top=box.top, right=box.right, bottom=box.bottom),
                     center=center,
                     app_name=app_name
                 ))
@@ -218,7 +218,7 @@ class Tree:
                     name=node.Name.strip() or node.LocalizedControlType.capitalize() or "''",
                     app_name=app_name,
                     control_type=node.LocalizedControlType.title(),
-                    bounding_box=BoundingBox(left=box.left,top=box.top,right=box.right,bottom=box.bottom,width=box.width(),height=box.height()),
+                    bounding_box=BoundingBox(left=box.left, top=box.top, right=box.right, bottom=box.bottom),
                     center=center,
                     horizontal_scrollable=scroll_pattern.HorizontallyScrollable,
                     vertical_scrollable=scroll_pattern.VerticallyScrollable
@@ -270,7 +270,7 @@ class Tree:
             # Label dimensions
             label_width = draw.textlength(str(label), font=font)
             label_height = font_size
-            left, top, right, bottom = adjusted_box
+            _, top, right, _ = adjusted_box
 
             # Label position above bounding box
             label_x1 = right - label_width

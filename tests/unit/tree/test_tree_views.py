@@ -1,9 +1,12 @@
 # tests/unit/tree/test_tree_views.py
 
 import pytest
-from unittest.mock import MagicMock
 
-from windows_use.tree.views import TreeElementNode, TextElementNode, ScrollElementNode, Center, BoundingBox, TreeState
+# tests/unit/tree/test_tree_views.py
+
+import pytest
+
+from raya.tree.views import TreeElementNode, TextElementNode, ScrollElementNode, Center, BoundingBox, TreeState
 
 # --- Fixtures for creating reusable test data ---
 
@@ -19,14 +22,16 @@ def sample_bounding_box():
     return BoundingBox(left=50, top=150, right=150, bottom=250)
 
 @pytest.fixture
-def sample_interactive_node(sample_bounding_box, sample_center):
+def sample_interactive_node():
     """Returns a sample TreeElementNode (interactive node)."""
+    bbox = BoundingBox(left=50, top=150, right=150, bottom=250)
+    center = Center(x=100, y=200)
     return TreeElementNode(
         name="Click Me Button",
         control_type="Button",
         shortcut="alt+c",
-        bounding_box=sample_bounding_box,
-        center=sample_center,
+        bounding_box=bbox,
+        center=center,
         app_name="TestApp"
     )
 
@@ -39,14 +44,16 @@ def sample_informative_node():
     )
 
 @pytest.fixture
-def sample_scrollable_node(sample_bounding_box, sample_center):
+def sample_scrollable_node():
     """Returns a sample ScrollElementNode."""
+    bbox = BoundingBox(left=50, top=150, right=150, bottom=250)
+    center = Center(x=100, y=200)
     return ScrollElementNode(
         name="Main Content Area",
         control_type="Pane",
         app_name="TestApp",
-        bounding_box=sample_bounding_box,
-        center=sample_center,
+        bounding_box=bbox,
+        center=center,
         horizontal_scrollable=False,
         vertical_scrollable=True
     )
@@ -81,12 +88,14 @@ class TestTreeState:
         state = TreeState()
         assert state.interactive_elements_to_string() == ""
 
+    @pytest.mark.usefixtures("sample_interactive_node")
     def test_interactive_elements_to_string_single(self, sample_interactive_node):
         """Tests interactive_elements_to_string with a single node."""
         state = TreeState(interactive_nodes=[sample_interactive_node])
         expected_string = "Label: 0 App Name: TestApp ControlType: Button Control Name: Click Me Button Shortcut: alt+c Cordinates: (100,200)"
         assert state.interactive_elements_to_string() == expected_string
 
+    @pytest.mark.usefixtures("sample_interactive_node") 
     def test_interactive_elements_to_string_multiple(self, sample_interactive_node):
         """Tests interactive_elements_to_string with multiple nodes."""
         node2 = TreeElementNode(
@@ -105,10 +114,11 @@ class TestTreeState:
         state = TreeState()
         assert state.informative_elements_to_string() == ""
 
-    def test_informative_elements_to_string_multiple(self, sample_informative_node):
+    @pytest.mark.usefixtures("sample_informative_node")
+    def test_informative_elements_to_string_multiple(self, informative_node):
         """Tests informative_elements_to_string with multiple nodes."""
         node2 = TextElementNode(name="Version 1.0", app_name="TestApp")
-        state = TreeState(informative_nodes=[sample_informative_node, node2])
+        state = TreeState(informative_nodes=[informative_node, node2])
         expected_string = (
             "App Name: TestApp Name: Welcome to the App\n"
             "App Name: TestApp Name: Version 1.0"
@@ -120,20 +130,22 @@ class TestTreeState:
         state = TreeState()
         assert state.scrollable_elements_to_string() == ""
 
-    def test_scrollable_elements_to_string_no_interactive_nodes(self, sample_scrollable_node):
+    @pytest.mark.usefixtures("sample_scrollable_node")
+    def test_scrollable_elements_to_string_no_interactive_nodes(self, scrollable_node):
         """Tests scrollable_elements_to_string with no interactive nodes present."""
-        state = TreeState(scrollable_nodes=[sample_scrollable_node])
+        state = TreeState(scrollable_nodes=[scrollable_node])
         expected_string = "Label: 0 App Name: TestApp ControlType: Pane Control Name: Main Content Area Cordinates: (100,200) Horizontal Scrollable: False Vertical Scrollable: True"
         assert state.scrollable_elements_to_string() == expected_string
 
-    def test_scrollable_elements_label_offset(self, sample_interactive_node, sample_scrollable_node):
+    @pytest.mark.usefixtures("sample_interactive_node", "sample_scrollable_node")
+    def test_scrollable_elements_label_offset(self, interactive_node, scrollable_node):
         """
         Tests that scrollable node labels are correctly offset by the number
         of interactive nodes.
         """
         state = TreeState(
-            interactive_nodes=[sample_interactive_node, sample_interactive_node],
-            scrollable_nodes=[sample_scrollable_node]
+            interactive_nodes=[interactive_node, interactive_node],
+            scrollable_nodes=[scrollable_node]
         )
         expected_string = "Label: 2 App Name: TestApp ControlType: Pane Control Name: Main Content Area Cordinates: (100,200) Horizontal Scrollable: False Vertical Scrollable: True"
         assert state.scrollable_elements_to_string() == expected_string

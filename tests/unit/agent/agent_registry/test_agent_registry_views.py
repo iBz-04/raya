@@ -2,11 +2,11 @@ import pytest
 from typing import Callable
 from unittest.mock import MagicMock
 
-from windows_use.agent.registry.views import Tool, ToolResult
+from raya.agent.registry.views import Tool, ToolResult
 
 class TestAgentRegistryViews:
     """
-    Tests for the data models in windows_use.agent.registry.views.
+    Tests for the data models in raya.agent.registry.views.
     """
 
     def test_tool_initialization(self):

@@ -5,19 +5,19 @@ from unittest.mock import MagicMock, patch, call, ANY
 from PIL import Image, ImageFont, ImageDraw
 from concurrent.futures import ThreadPoolExecutor
 
-from windows_use.tree.service import Tree
-from windows_use.tree.views import TreeElementNode, TextElementNode, ScrollElementNode, Center, BoundingBox, TreeState
+from raya.tree.service import Tree
+from raya.tree.views import TreeElementNode, TextElementNode, ScrollElementNode, Center, BoundingBox, TreeState
 
 class TestTree:
     @pytest.fixture(autouse=True)
     def setup_mocks(self):
-        with patch("windows_use.tree.GetRootControl") as MockGetRootControl, \
-             patch("windows_use.tree.sleep") as MockSleep, \
-             patch("windows_use.tree.ThreadPoolExecutor") as MockThreadPoolExecutor, \
-             patch("windows_use.tree.Image") as MockImage, \
-             patch("windows_use.tree.ImageFont") as MockImageFont, \
-             patch("windows_use.tree.ImageDraw") as MockImageDraw, \
-             patch("windows_use.tree.random_point_within_bounding_box") as MockRandomPoint:
+        with patch("raya.tree.GetRootControl") as MockGetRootControl, \
+             patch("raya.tree.sleep") as MockSleep, \
+             patch("raya.tree.ThreadPoolExecutor") as MockThreadPoolExecutor, \
+             patch("raya.tree.Image") as MockImage, \
+             patch("raya.tree.ImageFont") as MockImageFont, \
+             patch("raya.tree.ImageDraw") as MockImageDraw, \
+             patch("raya.tree.random_point_within_bounding_box") as MockRandomPoint:
 
             self.mock_get_root_control = MockGetRootControl
             self.mock_sleep = MockSleep
@@ -128,7 +128,7 @@ class TestTree:
 
         mock_executor.submit.side_effect = submit_effect
 
-        with patch("windows_use.tree.as_completed", return_value=futures):
+        with patch("raya.tree.as_completed", return_value=futures):
             interactive, _, _ = tree_instance.get_appwise_nodes(root_mock)
 
             assert mock_executor.submit.call_count == expected_apps_to_process

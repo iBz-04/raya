@@ -4,7 +4,7 @@ import pytest
 from pydantic import ValidationError
 from typing import Literal
 
-from windows_use.agent.tools.views import (
+from raya.agent.tools.views import (
     SharedBaseModel,
     Done,
     Clipboard,
@@ -24,7 +24,7 @@ from windows_use.agent.tools.views import (
 
 class TestAgentToolsViews:
     """
-    Tests for the Pydantic models in windows_use.agent.tools.views.
+    Tests for the Pydantic models in raya.agent.tools.views.
     """
 
     def test_shared_base_model_extra_fields(self):

@@ -1,7 +1,7 @@
 from uiautomation import Control, GetRootControl, IsIconic, IsZoomed, IsWindowVisible, ControlType, ControlFromCursor, SetWindowTopmost, IsTopLevelWindow, ShowWindow, ControlFromHandle
-from windows_use.desktop.config import EXCLUDED_APPS, BROWSER_NAMES
-from windows_use.desktop.views import DesktopState,App,Size
-from windows_use.tree.service import Tree
+from raya.desktop.config import EXCLUDED_APPS, BROWSER_NAMES
+from raya.desktop.views import DesktopState,App,Size
+from raya.tree.service import Tree
 from PIL.Image import Image as PILImage
 from contextlib import contextmanager
 from fuzzywuzzy import process
@@ -113,8 +113,8 @@ class Desktop:
             return (output, e.returncode)
         
     def is_app_browser(self,node:Control):
-        process=Process(node.ProcessId)
-        return process.name() in BROWSER_NAMES
+        proc = Process(node.ProcessId)
+        return proc.name() in BROWSER_NAMES
     
     def get_default_language(self) -> str:
         """Return the OS default language display name.
@@ -160,11 +160,11 @@ class Desktop:
         
     def launch_app(self,name:str):
         if not name or not isinstance(name, str):
-            return (f'Invalid application name provided.', None, 1)
+            return ('Invalid application name provided.', None, 1)
         
         apps_map=self.get_apps_from_start_menu()
         if not apps_map:
-            return (f'Could not retrieve start menu applications.', None, 1)
+            return ('Could not retrieve start menu applications.', None, 1)
             
         matched_app=process.extractOne(name, apps_map.keys(), score_cutoff=60)
         if matched_app is None:

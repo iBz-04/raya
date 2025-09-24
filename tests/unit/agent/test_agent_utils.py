@@ -4,12 +4,12 @@ import ast
 import re
 
 from langchain_core.messages import BaseMessage, HumanMessage
-from windows_use.agent.views import AgentData, Action
-from windows_use.agent.utils import read_file, extract_agent_data, image_message
+from raya.agent.views import AgentData, Action
+from raya.agent.utils import read_file, extract_agent_data, image_message
 
 class TestAgentUtils:
     """
-    Tests for utility functions in windows_use.agent.utils.
+    Tests for utility functions in raya.agent.utils.
     """
 
     @patch("builtins.open", new_callable=MagicMock)
@@ -129,7 +129,7 @@ class TestAgentUtils:
         else:
             assert agent_data.action is None
 
-    @patch("windows_use.agent.utils.HumanMessage")
+    @patch("raya.agent.utils.HumanMessage")
     def test_image_message(self, mock_human_message):
         """
         Test `image_message` function creates a HumanMessage with correct content structure.

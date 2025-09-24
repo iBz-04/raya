@@ -1,6 +1,6 @@
-from windows_use.agent.registry.views import ToolResult
-from windows_use.agent.views import AgentData
-from windows_use.desktop.views import DesktopState
+from raya.agent.registry.views import ToolResult
+from raya.agent.views import AgentData
+from raya.desktop.views import DesktopState
 from langchain.prompts import PromptTemplate
 from importlib.resources import files
 from datetime import datetime
@@ -14,7 +14,7 @@ class Prompt:
     @staticmethod
     def system_prompt(browser: str,language: str,tools_prompt:str,max_steps:int,instructions: list[str]=[]) -> str:
         width, height = pg.size()
-        template =PromptTemplate.from_file(files('windows_use.agent.prompt').joinpath('system.md'))
+        template =PromptTemplate.from_file(files('raya.agent.prompt').joinpath('system.md'))
         return template.format(**{
             'current_datetime': datetime.now().strftime('%A, %B %d, %Y'),
             'instructions': '\n'.join(instructions),
@@ -31,7 +31,7 @@ class Prompt:
     
     @staticmethod
     def action_prompt(agent_data:AgentData) -> str:
-        template = PromptTemplate.from_file(files('windows_use.agent.prompt').joinpath('action.md'))
+        template = PromptTemplate.from_file(files('raya.agent.prompt').joinpath('action.md'))
         return template.format(**{
             'evaluate': agent_data.evaluate,
             'memory':  agent_data.memory,
@@ -64,7 +64,7 @@ class Prompt:
     def observation_prompt(query:str,steps:int,max_steps:int, tool_result:ToolResult,desktop_state: DesktopState) -> str:
         cursor_location = pg.position()
         tree_state = desktop_state.tree_state
-        template = PromptTemplate.from_file(files('windows_use.agent.prompt').joinpath('observation.md'))
+        template = PromptTemplate.from_file(files('raya.agent.prompt').joinpath('observation.md'))
         return template.format(**{
             'steps': steps,
             'max_steps': max_steps,
@@ -80,7 +80,7 @@ class Prompt:
     
     @staticmethod
     def answer_prompt(agent_data: AgentData, tool_result: ToolResult):
-        template = PromptTemplate.from_file(files('windows_use.agent.prompt').joinpath('answer.md'))
+        template = PromptTemplate.from_file(files('raya.agent.prompt').joinpath('answer.md'))
         return template.format(**{
             'evaluate': agent_data.evaluate,
             'memory':  agent_data.memory,

@@ -2,12 +2,12 @@ import pytest
 from unittest.mock import MagicMock, patch
 import random
 
-from windows_use.tree.utils import random_point_within_bounding_box
+from raya.tree.utils import random_point_within_bounding_box
 import uiautomation as uia
 
 class TestTreeUtils:
     """
-    Tests for utility functions in windows_use.tree.utils.
+    Tests for utility functions in raya.tree.utils.
     """
 
     @pytest.fixture(autouse=True)
@@ -15,7 +15,7 @@ class TestTreeUtils:
         """
         Mocks global dependencies for Tree utility tests.
         """
-        with patch("windows_use.tree.utils.random") as mock_random:
+        with patch("raya.tree.utils.random") as mock_random:
             self.mock_random = mock_random
             yield
 

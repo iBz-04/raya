@@ -1,7 +1,6 @@
 from langchain_openai import ChatOpenAI
-from windows_use.agent import Agent
+from raya.agent import Agent
 from dotenv import load_dotenv
-import os
 
 
 load_dotenv()

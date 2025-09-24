@@ -1,22 +1,21 @@
-from windows_use.agent.tools.service import click_tool, type_tool, launch_tool, shell_tool, clipboard_tool, done_tool, shortcut_tool, scroll_tool, drag_tool, move_tool, key_tool, wait_tool, scrape_tool, switch_tool, resize_tool
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
-from windows_use.agent.utils import extract_agent_data, image_message
-from langchain_core.language_models.chat_models import BaseChatModel
-from windows_use.agent.registry.views import ToolResult
-from windows_use.agent.registry.service import Registry
-from windows_use.agent.prompt.service import Prompt
-from live_inspect.watch_cursor import WatchCursor
-from langgraph.graph import START,END,StateGraph
-from windows_use.agent.views import AgentResult
-from windows_use.desktop.service import Desktop
-from windows_use.agent.state import AgentState
+from raya.agent.tools.service import click_tool, type_tool, launch_tool, shell_tool, clipboard_tool, done_tool, shortcut_tool, scroll_tool, drag_tool, move_tool, key_tool, wait_tool, scrape_tool, switch_tool, resize_tool
+from raya.agent.utils import extract_agent_data, image_message
+from raya.agent.registry.views import ToolResult
+from raya.agent.registry.service import Registry
+from raya.agent.prompt.service import Prompt
+from raya.agent.views import AgentResult
+from raya.desktop.service import Desktop
+from raya.agent.state import AgentState
 from langchain_core.tools import BaseTool
+from langgraph.graph import StateGraph, START, END
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from langchain_core.language_models.chat_models import BaseChatModel
 from contextlib import nullcontext
 from rich.markdown import Markdown
 from rich.console import Console
 from termcolor import colored
 from textwrap import shorten
-from typing import Literal
+from typing import Literal, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -45,14 +44,23 @@ class Agent:
     Returns:
         Agent
     '''
-    def __init__(self,instructions:list[str]=[],additional_tools:list[BaseTool]=[],browser:Literal['edge','chrome','firefox']='edge', llm: BaseChatModel=None,consecutive_failures:int=3,max_steps:int=20,use_vision:bool=False,auto_minimize:bool=False):
-        self.name='Windows Use'
-        self.description='An agent that can interact with GUI elements on Windows' 
-        self.registry = Registry([
+    def __init__(self, instructions: Optional[list[str]] = None, additional_tools: Optional[list[BaseTool]] = None, browser: Literal['edge','chrome','firefox'] = 'edge', llm: BaseChatModel = None, consecutive_failures: int = 3, max_steps: int = 20, use_vision: bool = False, auto_minimize: bool = False):
+        # Avoid mutable default arguments
+        if instructions is None:
+            instructions = []
+        if additional_tools is None:
+            additional_tools = []
+        self.name = 'Raya Agent'
+        self.description = 'An agent that can interact with GUI elements on Windows'
+        # Initialize desktop service
+        self.desktop = Desktop()
+        tools = [
             click_tool,type_tool, launch_tool, shell_tool, clipboard_tool,
             done_tool, shortcut_tool, scroll_tool, drag_tool, move_tool,
             key_tool, wait_tool, scrape_tool, switch_tool, resize_tool
-        ] + additional_tools)
+        ] + additional_tools
+        # Initialize registry with available tools
+        self.registry = Registry(tools)
         self.instructions=instructions
         self.browser=browser
         self.max_steps=max_steps
@@ -60,22 +68,20 @@ class Agent:
         self.auto_minimize=auto_minimize
         self.use_vision=use_vision
         self.llm = llm
-        self.watch_cursor = WatchCursor()
-        self.desktop = Desktop()
         self.console=Console()
         self.graph=self.create_graph()
 
-    def reason(self,state:AgentState):
-        steps=state.get('steps')
-        max_steps=state.get('max_steps')
-        messages=state.get('messages')
-        message=self.llm.invoke(messages)
-        logger.info(f"Iteration: {steps}")
+    def reason(self, state: AgentState):
+        steps = state.get('steps')
+        max_steps = state.get('max_steps')
+        messages = state.get('messages')
+        message = self.llm.invoke(messages)
+        logger.info("Iteration: %d", steps)
         agent_data = extract_agent_data(message=message)
-        logger.info(colored(f"📝: Evaluate: {agent_data.evaluate}",color='yellow',attrs=['bold']))
-        logger.info(colored(f"📒: Memory: {agent_data.memory}",color='light_green',attrs=['bold']))
-        logger.info(colored(f"📚: Plan: {agent_data.plan}",color='light_blue',attrs=['bold']))
-        logger.info(colored(f"💭: Thought: {agent_data.thought}",color='light_magenta',attrs=['bold']))
+        logger.info(colored(f"📝: Evaluate: {agent_data.evaluate}", color='yellow', attrs=['bold']))
+        logger.info(colored(f"📒: Memory: {agent_data.memory}", color='light_green', attrs=['bold']))
+        logger.info(colored(f"📚: Plan: {agent_data.plan}", color='light_blue', attrs=['bold']))
+        logger.info(colored(f"💭: Thought: {agent_data.thought}", color='light_magenta', attrs=['bold']))
 
         last_message = state.get('messages').pop()
         if isinstance(last_message, HumanMessage):
@@ -129,8 +135,8 @@ class Agent:
 
         return graph.compile(debug=False)
 
-    def invoke(self,query: str)->AgentResult:
-        steps=1
+    def invoke(self, query: str) -> AgentResult:
+        steps = 1
         with (self.desktop.auto_minimize() if self.auto_minimize else nullcontext()):
             desktop_state = self.desktop.get_state(use_vision=self.use_vision)
             language=self.desktop.get_default_language()
@@ -152,15 +158,15 @@ class Agent:
                 'previous_observation':None
             }
             try:
-                with self.watch_cursor:
-                    response=self.graph.invoke(state,config={'recursion_limit':self.max_steps*10})         
-            except Exception as error:
-                response={
-                    'output':None,
-                    'error':f"Error: {error}"
+                # Execute the state graph without watch_cursor
+                response = self.graph.invoke(state, config={'recursion_limit': self.max_steps * 10})
+            except Exception as error:  # noqa: E722
+                response = {
+                    'output': None,
+                    'error': f"Error: {error}"
                 }
         return AgentResult(content=response['output'], error=response['error'])
 
     def print_response(self,query: str):
         response=self.invoke(query)
-        self.console.print(Markdown(response.content or response.error))   
+        self.console.print(Markdown(response.content or response.error))

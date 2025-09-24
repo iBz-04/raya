@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import ValidationError
 from textwrap import dedent
 
-from windows_use.agent.tools.service import (
+from raya.agent.tools.service import (
     done_tool,
     launch_tool,
     shell_tool,
@@ -22,8 +22,8 @@ from windows_use.agent.tools.service import (
     wait_tool,
     scrape_tool,
 )
-from windows_use.desktop.service import Desktop
-from windows_use.agent.tools.views import (
+from raya.desktop.service import Desktop
+from raya.agent.tools.views import (
     Click,
     Type,
     Launch,
@@ -47,7 +47,7 @@ from markdownify import markdownify
 
 class TestAgentToolsService:
     """
-    Tests for the tool functions in windows_use.agent.tools.service.
+    Tests for the tool functions in raya.agent.tools.service.
     """
 
     @pytest.fixture(autouse=True)
@@ -85,7 +85,7 @@ class TestAgentToolsService:
         """
         Provides a mock SystemCursor instance.
         """
-        with patch("windows_use.agent.tools.service.cursor") as mock:
+        with patch("raya.agent.tools.service.cursor") as mock:
             yield mock
 
     def test_done_tool(self, mock_desktop):
@@ -104,7 +104,7 @@ class TestAgentToolsService:
             ("nonexistent", 1, "Failed to launch Nonexistent."),
         ],
     )
-    @patch("windows_use.agent.tools.service.pg.sleep")
+    @patch("raya.agent.tools.service.pg.sleep")
     def test_launch_tool(self, mock_sleep, mock_desktop, app_name, launch_status, expected_output):
         """
         Test `launch_tool` for successful and failed application launches.
@@ -140,7 +140,7 @@ class TestAgentToolsService:
             pytest.param("paste", "hi", None, "must not be provided for 'paste' mode", True, id="paste-fail-with-text"),
         ],
     )
-    @patch("windows_use.agent.tools.service.pc")
+    @patch("raya.agent.tools.service.pc")
     def test_clipboard_tool(
         self, mock_pc, mock_desktop, mode, text, expected_pc_call, expected_result, raises_error
     ):
@@ -258,7 +258,7 @@ class TestAgentToolsService:
             (None, "invalid", "up", 1, None, [], "Input should be 'horizontal' or 'vertical'", True, ValidationError),
         ],
     )
-    @patch("windows_use.agent.tools.service.uia")
+    @patch("raya.agent.tools.service.uia")
     def test_scroll_tool(
         self,
         mock_uia,
@@ -380,9 +380,9 @@ class TestAgentToolsService:
         pg.sleep.assert_called_once_with(duration)
         assert result == expected_output
 
-    @patch("windows_use.agent.tools.service.requests")
-    @patch("windows_use.agent.tools.service.markdownify")
-    def test_scrape_tool_success(self, mock_markdownify, mock_requests, mock_desktop):
+    @patch("raya.agent.tools.service.requests")
+    @patch("raya.agent.tools.service.markdownify")
+    def test_scrape_success(self, mock_markdownify, mock_requests, mock_desktop):
         """
         Test `scrape_tool` successfully fetches and converts webpage content.
         """
@@ -398,9 +398,9 @@ class TestAgentToolsService:
         mock_markdownify.assert_called_once_with(html=mock_response.text)
         assert result == "Scraped the contents of the entire webpage:\n# Hello"
 
-    @patch("windows_use.agent.tools.service.requests")
-    @patch("windows_use.agent.tools.service.markdownify")
-    def test_scrape_tool_request_exception(self, mock_markdownify, mock_requests, mock_desktop):
+    @patch("raya.agent.tools.service.requests")
+    @patch("raya.agent.tools.service.markdownify")
+    def test_scrape_failure(self, mock_markdownify, mock_requests, mock_desktop):
         """
         Test `scrape_tool` handles request exceptions.
         """
