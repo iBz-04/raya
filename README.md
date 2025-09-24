@@ -1,12 +1,14 @@
-# raya - Computer Use Agent
+- Raya - Computer Use Agent
 
 ---
 
 ## Introduction
 
-Are you tired of performing repetitive tasks on your PC? 
-
 **raya** is an AI agent for raya that harnesses the power of code and AI to control your PC with ease. It enables you to automate any task by interacting with applications, clicking buttons, typing, running commands, and capturing the UI state.
+
+### preview :) 
+https://github.com/user-attachments/assets/82ab57fe-8e4d-4f37-9516-0001e7e08845
+
 
 Unlike traditional computer vision models, **raya** works directly at the raya GUI layer, providing advanced automation capabilities without relying on image recognition techniques. 
 
