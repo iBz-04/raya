@@ -16,8 +16,8 @@ Unlike traditional computer vision models, **raya** works directly at the raya G
 ## Installation
 
 **Requirements:**
-- Python 3.12 or higher
-- raya 7, 8, 10, or 11
+- Python 3.13 or higher
+- windows 7, 8, 10, or 11
 - [UV](https://github.com/astral-sh/uv) (optional, or use pip)
 
 **To install with uv:**
@@ -65,7 +65,7 @@ See the [demos](#) for screenshots and more examples.
 
 ## Caution
 
-raya interacts directly with your raya OS at the GUI layer to perform actions. While designed to be intelligent and safe, it can make mistakes that might cause unintended changes. Use with care.
+raya interacts directly with your windows OS at the GUI layer to perform actions. While designed to be intelligent and safe, it can make mistakes that might cause unintended changes. Use with care.
 
 ## 🪪 License
 
